@@ -15,7 +15,7 @@ app.use(
     }),
 );
 app.use(express.json());
-app.all("/api/auth/*", toNodeHandler(auth));
+app.all("/api/auth", toNodeHandler(auth));
 app.use("/api/blogs", blogRoutes);
 app.use(errorHandler);
 
