@@ -11,12 +11,6 @@ app.use(
         origin: config.website_domain,
         credentials: true,
         methods: ["GET", "POST", "PUT", "OPTIONS"],
-        allowedHeaders: [
-            "Content-Type",
-            "Authorization",
-            "st-auth-mode",
-            "st-authorization",
-        ],
     }),
 );
 app.use(express.json());
