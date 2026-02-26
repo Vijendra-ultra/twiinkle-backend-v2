@@ -9,7 +9,7 @@ interface config {
     ses_from_email: string;
 }
 const config: config = {
-    api_domain: process.env.API_DOMAIN || "http://localhost:3000",
+    api_domain: process.env.WEBSITE_DOMAIN || "http://localhost:3000",
     port: Number(process.env.PORT) || 3000,
     website_domain: process.env.WEBSITE_DOMAIN || "http://localhost:3000",
     aws_access_key_id: process.env.AWS_ACCESS_KEY_ID || null,
