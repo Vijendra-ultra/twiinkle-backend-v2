@@ -3,6 +3,8 @@ import express from "express";
 import cors from "cors";
 import blogRoutes from "./routes/blogRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./auth";
 const app = express();
 app.use(
     cors({
@@ -13,6 +15,7 @@ app.use(
     }),
 );
 app.use(express.json());
+app.all("/api/auth/*", toNodeHandler(auth));
 app.use("/api/blogs", blogRoutes);
 app.use(errorHandler);
 
