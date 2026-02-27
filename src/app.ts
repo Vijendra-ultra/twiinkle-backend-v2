@@ -13,8 +13,9 @@ app.use(
         methods: ["GET", "POST", "PUT", "OPTIONS"],
     }),
 );
-app.use(express.json());
+
 app.all("/api/auth", toNodeHandler(auth));
+app.use(express.json());
 app.use("/api/blogs", blogRoutes);
 app.use(errorHandler);
 
