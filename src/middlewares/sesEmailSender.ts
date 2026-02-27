@@ -1,12 +1,16 @@
 import { SendEmailCommand, SESClient } from "@aws-sdk/client-ses";
 import config from "../config/config";
-const sesClient = new SESClient({
-    region: "ap-south-1",
-    credentials: {
-        accessKeyId: config.aws_access_key_id!,
-        secretAccessKey: config.aws_access_secret_key!,
-    },
-});
+// const sesClient = new SESClient({
+//     region: "ap-south-1",
+//     credentials: {
+//         accessKeyId: config.aws_access_key_id!,
+//         secretAccessKey: config.aws_access_secret_key!,
+//     },
+// });
+function logEnv() {
+    console.log(config.aws_access_key_id);
+    console.log(config.aws_access_secret_key);
+}
 const sesEmailSender = async (to: string, subject: string, body: string) => {
     try {
         const command = new SendEmailCommand({
@@ -25,10 +29,13 @@ const sesEmailSender = async (to: string, subject: string, body: string) => {
                     Data: subject,
                 },
             },
-            Source: process.env.SES_FROM_EMAIL!, // must be verified in SES
+            Source: config.ses_from_email!, // must be verified in SES
         });
-        const response = await sesClient.send(command);
-        return response.MessageId;
+        // const response = await sesClient.send(command);
+
+        // return response.MessageId;
+        logEnv();
+        console.log(logEnv());
     } catch (err) {
         console.log("Ses email verified", err);
         throw err;
