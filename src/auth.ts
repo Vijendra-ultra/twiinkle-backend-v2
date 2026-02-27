@@ -18,7 +18,7 @@ export const auth = betterAuth({
         enabled: true,
         requireEmailVerification: true,
         sendResetPassword: async ({ user, url, token }, req) => {
-            void sesEmailSender(
+            await sesEmailSender(
                 user.email,
                 "Reset your password",
                 passwordResetEmailTemplate(url),
@@ -27,11 +27,13 @@ export const auth = betterAuth({
     },
     emailVerification: {
         sendVerificationEmail: async ({ user, url, token }, request) => {
-            void sesEmailSender(
+            console.log("Email verification fired");
+            const res = await sesEmailSender(
                 user.email,
                 "Verify your mail",
                 verificationEmailTemplate(url),
             );
+            console.log(res);
         },
     },
     baseURL: config.api_domain,

@@ -28,7 +28,7 @@ const sesEmailSender = async (to: string, subject: string, body: string) => {
             Source: process.env.SES_FROM_EMAIL!, // must be verified in SES
         });
         const response = await sesClient.send(command);
-        console.log("Email sent successfully", response.MessageId);
+        return response.MessageId;
     } catch (err) {
         console.log("Ses email verified", err);
         throw err;
