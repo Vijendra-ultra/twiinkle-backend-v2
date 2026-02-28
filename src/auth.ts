@@ -1,9 +1,12 @@
-import { betterAuth } from "better-auth";
+import { APIError, betterAuth } from "better-auth";
 import { Pool } from "pg";
 import config from "./config/config";
 import sesEmailSender from "./middlewares/sesEmailSender";
 import verificationEmailTemplate from "./email-templates/verificatioEmail";
 import { passwordResetEmailTemplate } from "./email-templates/resetPassword";
+import { createAuthMiddleware } from "better-auth/api";
+import { signInSchema, signUpSchema } from "./schemas/auth.schema";
+
 const pool = new Pool({
     host: "localhost",
     port: 5432,
@@ -12,6 +15,7 @@ const pool = new Pool({
     database: "app_db",
     ssl: false,
 });
+
 export const auth = betterAuth({
     database: pool,
     emailAndPassword: {
@@ -25,6 +29,30 @@ export const auth = betterAuth({
             );
         },
     },
+    hooks: {
+        before: createAuthMiddleware(async (ctx) => {
+            switch (ctx.path) {
+                case ("/sign-up/email"): {
+                    const res = signUpSchema.safeParse(ctx.body);
+                    if (!res.success) {
+                        throw new APIError("BAD_REQUEST", {
+                            message: "Data is broken",
+                        });
+                    }
+                    break;
+                }
+                case ("/sign-in/email"): {
+                    const res = signInSchema.safeParse(ctx.body);
+                    if (!res.success) {
+                        throw new APIError("BAD_REQUEST", {
+                            message: "Data is broken",
+                        });
+                    }
+                    break;
+                }
+            }
+        }),
+    },
     emailVerification: {
         sendVerificationEmail: async ({ user, url, token }, request) => {
             console.log("Email verification fired");
@@ -37,7 +65,7 @@ export const auth = betterAuth({
         },
     },
     baseURL: config.api_domain,
-    secret: process.env.BETTER_AUTH_SECRET,
+    secret: config.better_auth_secret,
     cookies: {
         // change this flag to true in the case of prod and also set sameSite as none
         secure: false,
